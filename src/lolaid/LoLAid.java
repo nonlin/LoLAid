@@ -28,6 +28,7 @@ public class LoLAid extends Application {
     
     int scale = -1;
     double pixleCount = 0;
+    double versionNum = 1.2;
     @Override
     public void start(Stage primaryStage) {
 
@@ -81,8 +82,8 @@ submit.setOnAction((ActionEvent e) -> {
 
 
 
-        Scene scene = new Scene(grid, 300, 250);
-        primaryStage.setTitle("LolAid - Ult Notifier 1.0");
+        Scene scene = new Scene(grid, 310, 250);
+        primaryStage.setTitle("LolAid - Ult Notifier " + versionNum);
         primaryStage.setScene(scene);
         primaryStage.show();
         
@@ -107,31 +108,33 @@ submit.setOnAction((ActionEvent e) -> {
         submit.setDisable(true);
         double maxSupportedPixleCount = 3686400;
         
-        int height = Toolkit.getDefaultToolkit().getScreenSize().height;
-        int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+        double height = Toolkit.getDefaultToolkit().getScreenSize().height;
+        double width = Toolkit.getDefaultToolkit().getScreenSize().width;
         pixleCount = height * width;
-        System.out.println(pixleCount/maxSupportedPixleCount);
-        double pixleCountRatio = pixleCount/maxSupportedPixleCount;
+        double heightRatio = (height/1440);
+        double widthRatio = (width/2560);
+        
         //Scale is from 0 to 100 and ratio is from .45 to 100. 
-        //scale = 50;
-        double baseRatio = 0.467;
-        //Since raio range is .55, to calculate the how much a scale step is to a ratio step see how many times it takes 100 to get to .55
+        //Obtained from minValue/maxValue at scale 0 and scale 100
+        double baseRatio = 0.45714;
+        //Since raio range is .55 (1.0 - .45), to calculate the how much a scale step is to a ratio step see how many times it takes 100 to get to .55
         //0.55 / 100 = 0.0055
         double ratioStepPerScaleStep = 0.0055;
         //Pixle Mod is the amount based on the scale and ratio to modify the pixle placement of x and y
         //If Scale is 0 return the baseRatio, unchanged. 
         //Else return the scale * the ratio steps we need to take to accomidate a scale step plus the baseRatio to get actual Mod amount;
         double pixleMod =   (scale == 0 ? baseRatio :(scale * ratioStepPerScaleStep) + baseRatio);
+        
+       //Based on 2560x1440 resolution
         int maxValueX = 70;
-        //Based on 2560x1440 resolution
-        int maxValueY = (int)(280 * pixleCountRatio);
-        int maxNextY = (int)(118 * pixleCountRatio);
-        
-        int x = (int)(maxValueX * (pixleMod));
-        int y = (int)(maxValueY * (pixleMod));
-        int nextY =  (int)(maxNextY * (pixleMod));
-        
-        label.setText("Scale Factor Set At " + scale + "\n" + "Checking Ults\n" + "Screen Size " + width + "x" + height  + "\n" + "X Value is :" + x + " " + "Y Value is :" + y);
+        int maxValueY = (280);
+        int maxNextY = (118);
+        System.out.println("Before Res change X  Y: " + (maxValueX * (pixleMod) + " " + (maxValueY* (pixleMod))));
+        int x = (int)Math.floor((maxValueX * (pixleMod))  * widthRatio);
+        int y = (int)Math.floor((maxValueY * (pixleMod))  * heightRatio);
+        int nextY =  (int)((maxNextY * (pixleMod))  * heightRatio);
+        System.out.println("Width Ratio " + widthRatio + " " + "Height Ratio: " + heightRatio);
+        label.setText("Scale Factor Set At: " + scale + "\n" + "Checking Ults\n" + "Detected Screen Res: " + width + "x" + height  + "\n" + "X Value is :" + x + " " + "Y Value is :" + y);
         clear.setOnAction((ActionEvent e) -> {
             scaleInput.clear();
             label.setText(null);
@@ -141,9 +144,9 @@ submit.setOnAction((ActionEvent e) -> {
         });       
         //CheckForUlts test = new CheckForUlts();
         System.out.println("Checking Ults");
-        System.out.println("Screen Size " + width + "x" + height + " PixleRatio: " + pixleCountRatio);
-        System.out.println("X Value is :" + x + " " + "Y Value is :" + y);
-        timer.scheduleAtFixedRate(new CheckForUlts(x,y,nextY), 0, 1000);
+        System.out.println("Screen Size " + width + "x" + height);
+        System.out.println("X Value is :" + x + " " + "Y Value is :" + y + "Next Y Every " + nextY);
+        timer.scheduleAtFixedRate(new CheckForUlts(x,y,nextY), 0, 500);
     }
     
 }

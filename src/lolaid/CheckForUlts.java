@@ -36,7 +36,7 @@ public class CheckForUlts extends TimerTask{
         champCheck2.CheckColor();
         champCheck3.CheckColor();
         champCheck4.CheckColor();
-        System.out.println("Mouse X: " + x + " Mouse Y: " + y);
+        //System.out.println("Mouse X: " + x + " Mouse Y: " + y);
         
     }
 }
