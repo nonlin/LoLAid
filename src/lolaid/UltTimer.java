@@ -32,14 +32,17 @@ public class UltTimer {
     public Robot robot; 
     public Timer timer; 
     public Color color;
-    public String soundFile;
+    public String soundFile1;
+    public String soundFile2;
     int x;
     int y;
-    boolean alreadyExecuted = false;
+    boolean ultOn = false;
+    boolean ultOff = true;
+    boolean enablePlayDown;
     public UltTimer(){
     }
     
-    public UltTimer(String soundLocation, int xPos, int yPos){
+    public UltTimer(String soundLocation1, String soundLocation2, int xPos, int yPos, boolean playDown){
         
         try {
             robot = new Robot();
@@ -49,9 +52,11 @@ public class UltTimer {
             e.printStackTrace();
         }
         //alreadyExecuted = AE;
-        soundFile = soundLocation;
+        soundFile1 = soundLocation1;
+        soundFile2 = soundLocation2;
         x = xPos;
         y = yPos;
+        enablePlayDown = playDown;
         
     }
     
@@ -63,29 +68,39 @@ public class UltTimer {
         
       this.color = robot.getPixelColor(x, y);
       //System.out.println("Checking" + " " + alreadyExecuted);
-        if ( !alreadyExecuted && (color.getGreen() > 250 && (color.getRed() < 153 && color.getBlue() < 153) || (color.getGreen() > 203 && (color.getRed() < 103 && color.getBlue() < 103) || (color.getGreen() > 50 && (color.getRed() < 3 && color.getBlue() < 3))))){
-            AnnounceUlt();
-            alreadyExecuted = true;
+        if ( !ultOn && (color.getGreen() > 250 && (color.getRed() < 153 && color.getBlue() < 153) || (color.getGreen() > 203 && (color.getRed() < 103 && color.getBlue() < 103) || (color.getGreen() > 50 && (color.getRed() < 3 && color.getBlue() < 3))))){
+            AnnounceUltOn();
+            ultOn = true;
+            if(enablePlayDown)
+                ultOff = true;
             //System.out.println("Done" + alreadyExecuted + " " + color.getGreen());
         }
-        else if(color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50){
-            alreadyExecuted = false;
+        //in case where enable down is on we play the sound and toggle the ultOn 
+        else if(enablePlayDown && ultOff && (color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50)){
+            AnnounceUltOff();
+            ultOn = false;
+            ultOff = false;
+            //System.out.println("false " + color.getGreen());
+       }
+       //to still toggle ultOn in case where user doesn't want to enable down sound. 
+       else if(!enablePlayDown && (color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50)){
+            ultOn = false;
             //System.out.println("false " + color.getGreen());
        }
        else{
         //System.out.println("No if true " + color.getGreen());
        }
 
-        return alreadyExecuted;
+        return ultOn;
     }
     
-    void AnnounceUlt(){
+    void AnnounceUltOn(){
         try{
             // open the sound file as a Java input stream
             //soundFile = "./sounds/champ1green.wav";
             ClassLoader cl = this.getClass().getClassLoader();
-            cl.getResource(soundFile);
-            InputStream in = new FileInputStream(soundFile);
+            cl.getResource(soundFile1);
+            InputStream in = new FileInputStream(soundFile1);
  
             // create an audiostream from the inputstream
             AudioStream audioStream = new AudioStream(in);
@@ -99,5 +114,25 @@ public class UltTimer {
             //
             }catch(Exception e){System.out.println(e);}
         }
+    void AnnounceUltOff(){
+        try{
+            // open the sound file as a Java input stream
+            //soundFile = "./sounds/champ1green.wav";
+            ClassLoader cl = this.getClass().getClassLoader();
+            cl.getResource(soundFile2);
+            InputStream in = new FileInputStream(soundFile2);
+ 
+            // create an audiostream from the inputstream
+            AudioStream audioStream = new AudioStream(in);
+ 
+            // play the audio clip with the audioplayer class
+
+            AudioPlayer.player.start(audioStream);
+            //System.out.println(AudioPlayer.player.getId());
+            //Thread.sleep(1500);
+            //AudioPlayer.player.stop(audioStream);
+            //
+            }catch(Exception e){System.out.println(e);}    
+    }
 }
 
