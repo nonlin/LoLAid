@@ -58,7 +58,7 @@ public class LoLAid extends Application {
 
 	int scale = -1;
 	double pixleCount = 0;
-	String versionNum = "1.2.5";
+	String versionNum = "1.2.7";
         boolean playUp = true;
         boolean playDown = false;
         String soundC1,soundC2,soundC3,soundC4;
@@ -140,7 +140,7 @@ public class LoLAid extends Application {
 
                 ChampVoiceSlectionBoxes(grid);
 
-		Scene scene = new Scene(grid, 310, 340);
+		Scene scene = new Scene(grid, 320, 340);
 		primaryStage.setTitle("LolAid - Ult Notifier " + versionNum);
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -162,33 +162,50 @@ public class LoLAid extends Application {
 	public void runCheck(Label timeLabel, int scale, Label label, Timer timer, Button clear, TextField scaleInput, Button submit) {
 
 		submit.setDisable(true);
-		double maxSupportedPixleCount = 3686400;
+                
+		double height = 1200.0;//Toolkit.getDefaultToolkit().getScreenSize().height;
+		double width = 1920.0;//Toolkit.getDefaultToolkit().getScreenSize().width;
+                //Based on 2560x1440 resolution
+		double baseMaxX = 67.0;
+		double baseMaxY = 260.0;
+		double baseMaxNextY = (110.0);
+                
+                double baseMinX = 32.0;
+		double baseMinY = (131.0);
+                double baseMinNextY = (56.0);
 
-		double height = Toolkit.getDefaultToolkit().getScreenSize().height;
-		double width = Toolkit.getDefaultToolkit().getScreenSize().width;
-		pixleCount = height * width;
-		double heightRatio = (height / 1440);
-		double widthRatio = (width / 2560);
-
-		//Scale is from 0 to 100 and ratio is from .45 to 100. 
+		double heightRatio = (height / 1440.0);
+		double widthRatio = (width / 2560.0);
+                //Scale max and min to match new max and min of current resolution. 
+		double maxValueX = baseMaxX * widthRatio;
+		double maxValueY = baseMaxY * heightRatio;
+                double maxValueNextY = baseMaxNextY * heightRatio;
+                
+                double minValueX = baseMinX * widthRatio;
+		double minValueY = baseMinY * heightRatio;
+                double minValueNextY = baseMinNextY * heightRatio;
+                
+		//Scale is from 0 to 100 and ratio is from minV/maxV to 1. 
 		//Obtained from minValue/maxValue at scale 0 and scale 100
-		double baseRatio = 0.45714;
-		//Since raio range is .55 (1.0 - .45), to calculate the how much a scale step is to a ratio step see how many times it takes 100 to get to .55
-		//0.55 / 100 = 0.0055
-		double ratioStepPerScaleStep = 0.0055;
+		double baseRatioX = (minValueX/maxValueX);
+                double baseRatioY = (minValueY/maxValueY);
+                double baseRatioNextY = (minValueNextY/maxValueNextY);
+		//Since raio range is minV/maxV to 1.0, to calculate the how much a scale step is to a ratio step see how many times it takes 100 to get to minV/maxV by diving by 100
+		//ex 0.55 / 100 = 0.0055
+		double ratioStepPerScaleStepX = (1.0 - baseRatioX)/100.0;
+                double ratioStepPerScaleStepY = (1.0 - baseRatioY)/100.0;
+                double ratioStepPerScaleStepNextY = (1.0 - baseRatioNextY)/100.0;
 		//Pixle Mod is the amount based on the scale and ratio to modify the pixle placement of x and y
 		//If Scale is 0 return the baseRatio, unchanged. 
 		//Else return the scale * the ratio steps we need to take to accomidate a scale step plus the baseRatio to get actual Mod amount;
-		double pixleMod = (scale == 0 ? baseRatio : (scale * ratioStepPerScaleStep) + baseRatio);
+		double pixleModX = (scale == 0 ? baseRatioX : (scale  * ratioStepPerScaleStepX) + baseRatioX);
+                double pixleModY = (scale == 0 ? baseRatioY : (scale  * ratioStepPerScaleStepY) + baseRatioY);
+                double pixleModNextY = (scale == 0 ? baseRatioY : (scale  * ratioStepPerScaleStepNextY) + baseRatioNextY);
 
-		//Based on 2560x1440 resolution
-		int maxValueX = 70;
-		int maxValueY = (280);
-		int maxNextY = (118);
-		System.out.println("Before Res change X  Y: " + (maxValueX * (pixleMod) + " " + (maxValueY * (pixleMod))));
-		int x = (int) Math.floor((maxValueX * (pixleMod)) * widthRatio);
-		int y = (int) Math.floor((maxValueY * (pixleMod)) * heightRatio);
-		int nextY = (int)((maxNextY * (pixleMod)) * heightRatio);
+		System.out.println("Before Res change X  Y: " + (maxValueX * (pixleModX) + " " + (maxValueY * (pixleModY))));
+		int x = (int) ((maxValueX * (pixleModX)));
+		int y = (int) ((maxValueY * (pixleModY)));
+		int nextY = (int)((maxValueNextY * (pixleModNextY)));
 		System.out.println("Width Ratio " + widthRatio + " " + "Height Ratio: " + heightRatio);
 		label.setText("Scale Factor Set At: " + scale + "\n" + "Checking Ults\n" + "Detected Screen Res: " + width + "x" + height + "\n" + "X Value is :" + x + " " + "Y Value is :" + y);
 		clear.setOnAction((ActionEvent e) -> {
