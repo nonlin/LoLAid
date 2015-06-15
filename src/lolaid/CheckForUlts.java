@@ -18,6 +18,7 @@ import java.awt.MouseInfo;
 import java.awt.Toolkit;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.scene.layout.Pane;
 
 /**
  *
@@ -29,15 +30,15 @@ public class CheckForUlts extends TimerTask {
     UltTimer champCheck2; //= new UltTimer("./sounds/champ2green.wav", 47, 275);
     UltTimer champCheck3; //= new UltTimer("./sounds/champ3green.wav", 47, 355);
     UltTimer champCheck4; //= new UltTimer("./sounds/champ4green.wav", 47, 435); 
-
+    long start = System.currentTimeMillis();
     int count = 0;
 
-    public CheckForUlts(int x, int y, int nextY, boolean playUp, boolean playDown, String soundC1, String soundC2, String soundC3, String soundC4) {
+    public CheckForUlts(int x, int y, int nextY, boolean playUp, boolean playDown, String soundC1, String soundC2, String soundC3, String soundC4, int scale, Pane root) {
 
-        champCheck1 = new UltTimer("./sounds/Up/" + soundC1 + "Up.wav", "./sounds/Down/" + soundC1 + "Down.wav", x, y, playDown);
-        champCheck2 = new UltTimer("./sounds/Up/" + soundC2 + "Up.wav", "./sounds/Down/" + soundC2 + "Down.wav", x, y + nextY, playDown);
-        champCheck3 = new UltTimer("./sounds/Up/" + soundC3 + "Up.wav", "./sounds/Down/" + soundC3 + "Down.wav", x, y + (nextY * 2), playDown);
-        champCheck4 = new UltTimer("./sounds/Up/" + soundC4 + "Up.wav", "./sounds/Down/" + soundC4 + "Down.wav", x, y + (nextY * 3), playDown);
+        champCheck1 = new UltTimer("./sounds/Up/" + soundC1 + "Up.wav", "./sounds/Down/" + soundC1 + "Down.wav", x, y, playDown, scale,root, start);
+        champCheck2 = new UltTimer("./sounds/Up/" + soundC2 + "Up.wav", "./sounds/Down/" + soundC2 + "Down.wav", x, y + nextY, playDown, scale,root, start);
+        champCheck3 = new UltTimer("./sounds/Up/" + soundC3 + "Up.wav", "./sounds/Down/" + soundC3 + "Down.wav", x, y + (nextY * 2), playDown, scale,root, start);
+        champCheck4 = new UltTimer("./sounds/Up/" + soundC4 + "Up.wav", "./sounds/Down/" + soundC4 + "Down.wav", x, y + (nextY * 3), playDown, scale,root, start);
     }
 
     public void run() {
@@ -45,9 +46,17 @@ public class CheckForUlts extends TimerTask {
         int x = MouseInfo.getPointerInfo().getLocation().x;
         int y = MouseInfo.getPointerInfo().getLocation().y;
         champCheck1.CheckColor();
+        champCheck1.UpdateTimer();
+
         champCheck2.CheckColor();
+        champCheck2.UpdateTimer();
+
         champCheck3.CheckColor();
+        champCheck3.UpdateTimer();
+
         champCheck4.CheckColor();
+        champCheck4.UpdateTimer();
+        
 		//System.out.println(count++);
         //System.out.println("Mouse X: " + x + " Mouse Y: " + y);
 

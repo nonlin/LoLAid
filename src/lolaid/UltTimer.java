@@ -22,6 +22,11 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.*;
 import java.util.Timer;
+import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
@@ -38,14 +43,19 @@ public class UltTimer {
     public String soundFile2;
     int x;
     int y;
+    int scale;
+    Pane root;
     boolean ultOn = false;
     boolean ultOff = true;
     boolean enablePlayDown;
-
+    long start;
+    int seconds;
+    final Label counter_1 = new Label("");
+    
     public UltTimer() {
     }
 
-    public UltTimer(String soundLocation1, String soundLocation2, int xPos, int yPos, boolean playDown) {
+    public UltTimer(String soundLocation1, String soundLocation2, int xPos, int yPos, boolean playDown, int Scale, Pane Root, long st) {
 
         try {
             robot = new Robot();
@@ -58,18 +68,30 @@ public class UltTimer {
         soundFile2 = soundLocation2;
         x = xPos;
         y = yPos;
+        scale = Scale;
+        root = Root;
+        start = st;
         enablePlayDown = playDown;
-
+        createTimer();
     }
 
     void StartTimer() {
-
+        
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                long time = System.currentTimeMillis() - start;
+                seconds = (int)(time / 1000);
+                
+            }
+        }.start();
     }
+    
 
     boolean CheckColor() {
 
         this.color = robot.getPixelColor(x, y);
-        //System.out.println("Checking" + " " + alreadyExecuted);
+        //Do when Ult is Up
         if (!ultOn && (color.getGreen() > 250 && (color.getRed() < 153 && color.getBlue() < 153) || (color.getGreen() > 203 && (color.getRed() < 103 && color.getBlue() < 103) || (color.getGreen() > 50 && (color.getRed() < 3 && color.getBlue() < 3))))) {
             AnnounceUltOn();
             ultOn = true;
@@ -136,5 +158,46 @@ public class UltTimer {
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public void createTimer() {
+        StartTimer();
+        int offSet = 30;
+        int maxFontSize = scale + 1;
+        String couterStyle = "-fx-text-fill: rgba(50, 60, 60, 1.0); -fx-font-style: italic; -fx-font-size: " + maxFontSize + "; -fx-font-weight: bold; -fx-padding: 0 0 20 0;";
+                      
+        //Use Platform.runlater to create labels outside of fx thread
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+               
+                counter_1.setLayoutX(x + offSet);
+                counter_1.setLayoutY(y);
+                root.getChildren().add(counter_1);
+                counter_1.setStyle(couterStyle);
+                
+         
+               // counter_1.setText(Integer.toString(seconds));
+            }
+        });
+           
+    }
+    public void UpdateTimer(){
+     Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+               counter_1.setText(Integer.toString(seconds));
+            }
+        });
+    }
+    
+    public void removeTimer(){
+            Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                root.getChildren().remove(counter_1);
+            }
+        });
     }
 }

@@ -71,6 +71,7 @@ public class LoLAid extends Application {
     String soundC1, soundC2, soundC3, soundC4;
     int globalX, globalY, globalNextY;
     Stage secondaryStage = new Stage();
+    Pane root = new Pane();
     @Override
     public void start(Stage primaryStage) {
         
@@ -143,8 +144,9 @@ public class LoLAid extends Application {
                 Stage transStage =  new Stage();
                 secondaryStage =  transStage;
                 scale = Integer.parseInt(scaleInput.getText());
-                runCheck(timeLabel1, Integer.parseInt(scaleInput.getText()), label, timer, clear, scaleInput, submit);
                 transWindow(secondaryStage);
+                runCheck(timeLabel1, Integer.parseInt(scaleInput.getText()), label, timer, clear, scaleInput, submit);
+               
 
             } else {
                 label.setText("You have not enetred a scale factor.");
@@ -252,7 +254,7 @@ public class LoLAid extends Application {
         int count = 0;
 
         //clock.scheduleAtFixedRate(new UltCoolDown(timeLabel), 0, 1000);
-        timer.scheduleAtFixedRate(new CheckForUlts(x, y, nextY, playUp, playDown, soundC1, soundC2, soundC3, soundC4), 0, 500);
+        timer.scheduleAtFixedRate(new CheckForUlts(x, y, nextY, playUp, playDown, soundC1, soundC2, soundC3, soundC4, scale, root), 0, 500);
     }
 
     public void ChampVoiceSlectionBoxes(GridPane grid) {
@@ -354,41 +356,11 @@ public class LoLAid extends Application {
     public Stage transWindow(Stage stage) {
 
         stage.initStyle(StageStyle.TRANSPARENT);
-        int offSet = 30;
-        int maxFontSize = scale+1;
-        String couterStyle = "-fx-text-fill: rgba(50, 60, 60, 1.0); -fx-font-style: italic; -fx-font-size: "+ maxFontSize +"; -fx-font-weight: bold; -fx-padding: 0 0 20 0;";
         //stage.setOpacity(.2);
         //Text text = new Text(20, 60, "Transparent!");
         //text.setFont(new Font(20));
         //text.setFill(Color.RED);
-        //Create a pane
-        Pane root = new Pane();
-
-        //Adding a Label
-        final Label counter_1 = new Label("0");
-        counter_1.setLayoutX(globalX + offSet);
-        counter_1.setLayoutY(globalY);
-        root.getChildren().add(counter_1);
-        counter_1.setStyle(couterStyle);
-        //Adding a Label
-        final Label counter_2 = new Label("0");
-        counter_2.setLayoutX(globalX + offSet);
-        counter_2.setLayoutY(globalY + globalNextY);
-        root.getChildren().add(counter_2);
-        counter_2.setStyle(couterStyle);
-        //Adding a Label
-        final Label counter_3 = new Label("0");
-        counter_3.setLayoutX(globalX + offSet);
-        counter_3.setLayoutY(globalY +(globalNextY  * 2));
-        root.getChildren().add(counter_3);
-        counter_3.setStyle(couterStyle);
-        //Adding a Label
-        final Label counter_4 = new Label("0");
-        counter_4.setLayoutX(globalX + offSet);
-        counter_4.setLayoutY(globalY +(globalNextY  * 3));
-        root.getChildren().add(counter_4);
-        counter_4.setStyle(couterStyle);
-        
+   
         // box.setOpacity(.1);
         root.setStyle("-fx-background-color: rgba(0, 100, 100, 0.0); -fx-background-radius: 10;");
 
