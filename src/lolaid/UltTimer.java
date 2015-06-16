@@ -129,12 +129,12 @@ public class UltTimer {
             UltTimerLogicDown();
             ultOn = false;
             ultOff = false;
-            
+
         } //to still toggle ultOn in case where user doesn't want to enable down sound. 
         else if (!enablePlayDown && (color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50)) {
             UltTimerLogicDown();
             ultOn = false;
-           
+
         } else {
             //System.out.println("No if true " + color.getGreen());
         }
@@ -212,8 +212,21 @@ public class UltTimer {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-
+                root.setVisible(true);
+                counter_1.setVisible(true);
                 counter_1.setText(Integer.toString(seconds));
+            }
+        });
+    }
+
+    public void HideTimerDisplay() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                root.setVisible(false);
+                counter_1.setVisible(false);
+
             }
         });
     }
@@ -274,8 +287,7 @@ public class UltTimer {
                     ultCoolDownSet = false;
                     countingDown = false;
                     seconds = 0;
-                }
-                //This is where are timer was "right" just prevent setting new cooldown and starting timer over
+                } //This is where are timer was "right" just prevent setting new cooldown and starting timer over
                 else if (seconds <= 0) {
                     startCount = false;
                     ultCoolDownSet = true;

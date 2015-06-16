@@ -73,10 +73,10 @@ public class LoLAid extends Application {
     Stage secondaryStage = new Stage();
     Pane root = new Pane();
     final Scene scene = new Scene(root, 200, 700);
+
     @Override
     public void start(Stage primaryStage) {
-        
-        
+
         //Creating a GridPane container
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));
@@ -117,7 +117,7 @@ public class LoLAid extends Application {
         GridPane.setConstraints(description, 0, 2);
         GridPane.setColumnSpan(description, 2);
         grid.getChildren().add(description);
-        description.setText("Enter your Lol Hud Scale Factor in the above text field.");
+        description.setText("Enter your Lol Hud Scale Factor in the above text field." + "\n" + "Hit Tab in game to see Timers (Beta)");
 
         //Adding a Label
         final Label timeLabel1 = new Label();
@@ -142,12 +142,11 @@ public class LoLAid extends Application {
                 // label.setText("Scale Factor Set At " + scaleInput.getText() );
                 //Eseentialy stop timer to restart it;
                 Timer timer = new Timer();
-                Stage transStage =  new Stage();
-                secondaryStage =  transStage;
+                Stage transStage = new Stage();
+                secondaryStage = transStage;
                 scale = Integer.parseInt(scaleInput.getText());
                 transWindow(secondaryStage);
                 runCheck(timeLabel1, Integer.parseInt(scaleInput.getText()), label, timer, clear, scaleInput, submit);
-               
 
             } else {
                 label.setText("You have not enetred a scale factor.");
@@ -155,11 +154,11 @@ public class LoLAid extends Application {
         });
 
         ChampVoiceSlectionBoxes(grid);
-        Scene scene = new Scene(grid, 320, 340);
-        primaryStage.setTitle("LolAid - Ult Notifier " + versionNum);
+        Scene scene = new Scene(grid, 400,390);
+        primaryStage.setTitle("LolAid - Ult Notifier - " + versionNum);
         primaryStage.setScene(scene);
         primaryStage.show();
-  
+
         //On exit close everything. 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -361,11 +360,10 @@ public class LoLAid extends Application {
         //Text text = new Text(20, 60, "Transparent!");
         //text.setFont(new Font(20));
         //text.setFill(Color.RED);
-   
+
         // box.setOpacity(.1);
         root.setStyle("-fx-background-color: rgba(0, 100, 100, 0.0); -fx-background-radius: 10;");
 
-        
         //scene.getStylesheets().add("TransparentWindowStyle.css");
         scene.setFill(null);
         root.setMouseTransparent(true);
@@ -374,9 +372,9 @@ public class LoLAid extends Application {
         stage.setX(0);
         stage.setY(0);
         stage.setScene(scene);
-       
+
         stage.show();
-        
+
         return stage;
     }
 
