@@ -50,12 +50,19 @@ public class UltTimer {
     boolean enablePlayDown;
     long start;
     int seconds;
+    int id;
+    boolean startCount = false;
+    int tempCoolDown = 0;
+    boolean ultCoolDownSet = false;
+    boolean countingDown = false;
+    AnimationTimer ultCounter;
+    AnimationTimer coolDownCounter;
     final Label counter_1 = new Label("");
-    
+
     public UltTimer() {
     }
 
-    public UltTimer(String soundLocation1, String soundLocation2, int xPos, int yPos, boolean playDown, int Scale, Pane Root, long st) {
+    public UltTimer(String soundLocation1, String soundLocation2, int xPos, int yPos, boolean playDown, int Scale, Pane Root, long st, int ID) {
 
         try {
             robot = new Robot();
@@ -63,7 +70,7 @@ public class UltTimer {
         } catch (AWTException e) {
             e.printStackTrace();
         }
-        //alreadyExecuted = AE;
+        id = ID;
         soundFile1 = soundLocation1;
         soundFile2 = soundLocation2;
         x = xPos;
@@ -73,20 +80,36 @@ public class UltTimer {
         start = st;
         enablePlayDown = playDown;
         createTimer();
+        // StartTimer();
     }
 
-    void StartTimer() {
-        
-        new AnimationTimer() {
+    void InitilizeUltCounter() {
+
+        ultCounter = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 long time = System.currentTimeMillis() - start;
-                seconds = (int)(time / 1000);
-                
+                seconds = (int) (time / 1000);
+
+                System.out.println("Setting Timer: " + id + " " + seconds);
+
             }
-        }.start();
+        };
     }
-    
+
+    void UltCountDown() {
+
+        coolDownCounter = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                long time = System.currentTimeMillis() - start;
+                seconds = (int) (time / 1000);
+                System.out.println("CoolDown: " + id + " with " + tempCoolDown + " - " + seconds + " = " + (tempCoolDown - seconds));
+                seconds = tempCoolDown - seconds;
+
+            }
+        };
+    }
 
     boolean CheckColor() {
 
@@ -94,21 +117,24 @@ public class UltTimer {
         //Do when Ult is Up
         if (!ultOn && (color.getGreen() > 250 && (color.getRed() < 153 && color.getBlue() < 153) || (color.getGreen() > 203 && (color.getRed() < 103 && color.getBlue() < 103) || (color.getGreen() > 50 && (color.getRed() < 3 && color.getBlue() < 3))))) {
             AnnounceUltOn();
+            UltTimerLogicUp();
             ultOn = true;
             if (enablePlayDown) {
                 ultOff = true;
             }
-            //System.out.println("Done" + alreadyExecuted + " " + color.getGreen());
+
         } //in case where enable down is on we play the sound and toggle the ultOn 
         else if (enablePlayDown && ultOff && (color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50)) {
             AnnounceUltOff();
+            UltTimerLogicDown();
             ultOn = false;
             ultOff = false;
-            //System.out.println("false " + color.getGreen());
+            
         } //to still toggle ultOn in case where user doesn't want to enable down sound. 
         else if (!enablePlayDown && (color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50)) {
+            UltTimerLogicDown();
             ultOn = false;
-            //System.out.println("false " + color.getGreen());
+           
         } else {
             //System.out.println("No if true " + color.getGreen());
         }
@@ -118,7 +144,7 @@ public class UltTimer {
 
     void AnnounceUltOn() {
         try {
-			// open the sound file as a Java input stream
+            // open the sound file as a Java input stream
             //soundFile = "./sounds/champ1green.wav";
             ClassLoader cl = this.getClass().getClassLoader();
             cl.getResource(soundFile1);
@@ -127,9 +153,9 @@ public class UltTimer {
             // create an audiostream from the inputstream
             AudioStream audioStream = new AudioStream(in);
 
-			// play the audio clip with the audioplayer class
+            // play the audio clip with the audioplayer class
             AudioPlayer.player.start(audioStream);
-			//System.out.println(AudioPlayer.player.getId());
+            //System.out.println(AudioPlayer.player.getId());
             //Thread.sleep(1500);
             //AudioPlayer.player.stop(audioStream);
             //
@@ -140,7 +166,7 @@ public class UltTimer {
 
     void AnnounceUltOff() {
         try {
-			// open the sound file as a Java input stream
+            // open the sound file as a Java input stream
             //soundFile = "./sounds/champ1green.wav";
             ClassLoader cl = this.getClass().getClassLoader();
             cl.getResource(soundFile2);
@@ -149,9 +175,9 @@ public class UltTimer {
             // create an audiostream from the inputstream
             AudioStream audioStream = new AudioStream(in);
 
-			// play the audio clip with the audioplayer class
+            // play the audio clip with the audioplayer class
             AudioPlayer.player.start(audioStream);
-			//System.out.println(AudioPlayer.player.getId());
+            //System.out.println(AudioPlayer.player.getId());
             //Thread.sleep(1500);
             //AudioPlayer.player.stop(audioStream);
             //
@@ -161,43 +187,102 @@ public class UltTimer {
     }
 
     public void createTimer() {
-        StartTimer();
+        //start();
         int offSet = 30;
         int maxFontSize = scale + 1;
-        String couterStyle = "-fx-text-fill: rgba(50, 60, 60, 1.0); -fx-font-style: italic; -fx-font-size: " + maxFontSize + "; -fx-font-weight: bold; -fx-padding: 0 0 20 0;";
-                      
+        String couterStyle = "-fx-text-fill: rgba(200, 60, 200, 1.0); -fx-font-style: italic; -fx-font-size: " + maxFontSize + "; -fx-font-weight: bold; -fx-padding: 0 0 20 0;";
+
         //Use Platform.runlater to create labels outside of fx thread
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-               
+
                 counter_1.setLayoutX(x + offSet);
                 counter_1.setLayoutY(y);
                 root.getChildren().add(counter_1);
                 counter_1.setStyle(couterStyle);
-                
-         
-               // counter_1.setText(Integer.toString(seconds));
+
+                // counter_1.setText(Integer.toString(seconds));
             }
         });
-           
+
     }
-    public void UpdateTimer(){
-     Platform.runLater(new Runnable() {
+
+    public void UpdateTimerDisplay() {
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
 
-               counter_1.setText(Integer.toString(seconds));
+                counter_1.setText(Integer.toString(seconds));
             }
         });
     }
-    
-    public void removeTimer(){
-            Platform.runLater(new Runnable() {
+
+    public void removeTimer() {
+        Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 root.getChildren().remove(counter_1);
             }
         });
+    }
+
+    private void UltTimerLogicDown() {
+        //if we've been given the ok to start Counting and we haven't already gotten a coolDown Down then we need to prepare to get one
+        if (startCount && !ultCoolDownSet && !countingDown) {
+            start = System.currentTimeMillis();
+            InitilizeUltCounter();
+            ultCounter.start();
+            startCount = false;
+        }
+        //ONce we have one start the count down
+        if (ultCoolDownSet) {
+            start = System.currentTimeMillis();
+            UltCountDown();
+            coolDownCounter.start();
+            countingDown = true;
+            ultCoolDownSet = false;
+        }
+    }
+
+    private void UltTimerLogicUp() {
+        //if we haven't yet set a cool down counter
+        if (!countingDown) {
+            if (startCount) {
+
+                startCount = false;
+            } else {//This is where we don't need set the initialCount
+                startCount = true;
+                if (ultCounter != null) {
+                    ultCounter.stop();
+                    tempCoolDown = seconds;
+                    System.out.println("CoolDown Set to " + tempCoolDown);
+                    //so next time ult goes down we can use this instead, a count down timer
+                    ultCoolDownSet = true;
+                }
+            }
+        } else {
+
+            //This is where we have a coolDownTimer when we go green we need to stop the coolDown timer from counting anymore. 
+            if (coolDownCounter != null) {
+                coolDownCounter.stop();
+                countingDown = false;
+                if (seconds > 0) {
+                    //this is where we go green before the timer finished (meaning inaccurate timer) So we need to start the update for the timer again and reset everything)
+                    startCount = true;
+                    tempCoolDown = 0;
+                    ultCoolDownSet = false;
+                    countingDown = false;
+                    seconds = 0;
+                }
+                //This is where are timer was "right" just prevent setting new cooldown and starting timer over
+                else if (seconds <= 0) {
+                    startCount = false;
+                    ultCoolDownSet = true;
+                    countingDown = true;
+                    seconds = 0;
+                }
+            }
+        }
     }
 }

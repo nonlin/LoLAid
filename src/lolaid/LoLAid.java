@@ -65,13 +65,14 @@ public class LoLAid extends Application {
 
     int scale = -1;
     double pixleCount = 0;
-    String versionNum = "1.2.7";
+    String versionNum = "1.3.0";
     boolean playUp = true;
     boolean playDown = false;
     String soundC1, soundC2, soundC3, soundC4;
     int globalX, globalY, globalNextY;
     Stage secondaryStage = new Stage();
     Pane root = new Pane();
+    final Scene scene = new Scene(root, 200, 700);
     @Override
     public void start(Stage primaryStage) {
         
@@ -364,7 +365,7 @@ public class LoLAid extends Application {
         // box.setOpacity(.1);
         root.setStyle("-fx-background-color: rgba(0, 100, 100, 0.0); -fx-background-radius: 10;");
 
-        final Scene scene = new Scene(root, 200, 700);
+        
         //scene.getStylesheets().add("TransparentWindowStyle.css");
         scene.setFill(null);
         root.setMouseTransparent(true);
