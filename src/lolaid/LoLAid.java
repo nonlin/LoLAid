@@ -65,7 +65,7 @@ public class LoLAid extends Application {
 
     int scale = -1;
     double pixleCount = 0;
-    String versionNum = "1.3.0";
+    String versionNum = "1.3.2";
     boolean playUp = true;
     boolean playDown = false;
     String soundC1, soundC2, soundC3, soundC4;
@@ -73,6 +73,7 @@ public class LoLAid extends Application {
     Stage secondaryStage = new Stage();
     Pane root = new Pane();
     final Scene scene = new Scene(root, 200, 700);
+    CheckForUlts ultChecker;
 
     @Override
     public void start(Stage primaryStage) {
@@ -154,7 +155,7 @@ public class LoLAid extends Application {
         });
 
         ChampVoiceSlectionBoxes(grid);
-        Scene scene = new Scene(grid, 400,390);
+        Scene scene = new Scene(grid, 400, 390);
         primaryStage.setTitle("LolAid - Ult Notifier - " + versionNum);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -242,6 +243,7 @@ public class LoLAid extends Application {
             secondaryStage.close();
             scaleInput.clear();
             label.setText(null);
+            ultChecker.resetAllUlts();
             timer.cancel();
             timer.purge();
             submit.setDisable(false);
@@ -250,11 +252,10 @@ public class LoLAid extends Application {
         System.out.println("Checking Ults");
         System.out.println("Screen Size " + width + "x" + height);
         System.out.println("X Value is :" + x + " " + "Y Value is :" + y + "Next Y Every " + nextY);
-        Timer clock = new Timer();
-        int count = 0;
 
-        //clock.scheduleAtFixedRate(new UltCoolDown(timeLabel), 0, 1000);
-        timer.scheduleAtFixedRate(new CheckForUlts(x, y, nextY, playUp, playDown, soundC1, soundC2, soundC3, soundC4, scale, root), 0, 500);
+        int count = 0;
+        ultChecker = new CheckForUlts(x, y, nextY, playUp, playDown, soundC1, soundC2, soundC3, soundC4, scale, root, clear); //clock.scheduleAtFixedRate(new UltCoolDown(timeLabel), 0, 1000);
+        timer.scheduleAtFixedRate(ultChecker, 0, 500);
     }
 
     public void ChampVoiceSlectionBoxes(GridPane grid) {

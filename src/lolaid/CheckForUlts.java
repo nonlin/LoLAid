@@ -23,6 +23,7 @@ import java.util.TimerTask;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javax.swing.SwingUtilities;
 import org.jnativehook.GlobalScreen;
@@ -42,13 +43,15 @@ public class CheckForUlts extends TimerTask implements NativeKeyListener {
     UltTimer champCheck4; //= new UltTimer("./sounds/champ4green.wav", 47, 435); 
     long start = System.currentTimeMillis();
     int count = 0;
+    Button clear;
 
-    public CheckForUlts(int x, int y, int nextY, boolean playUp, boolean playDown, String soundC1, String soundC2, String soundC3, String soundC4, int scale, Pane root) {
+    public CheckForUlts(int x, int y, int nextY, boolean playUp, boolean playDown, String soundC1, String soundC2, String soundC3, String soundC4, int scale, Pane root, Button Clear) {
 
         champCheck1 = new UltTimer("./sounds/Up/" + soundC1 + "Up.wav", "./sounds/Down/" + soundC1 + "Down.wav", x, y, playDown, scale, root, start, 1);
         champCheck2 = new UltTimer("./sounds/Up/" + soundC2 + "Up.wav", "./sounds/Down/" + soundC2 + "Down.wav", x, y + nextY, playDown, scale, root, start, 2);
         champCheck3 = new UltTimer("./sounds/Up/" + soundC3 + "Up.wav", "./sounds/Down/" + soundC3 + "Down.wav", x, y + (nextY * 2), playDown, scale, root, start, 3);
         champCheck4 = new UltTimer("./sounds/Up/" + soundC4 + "Up.wav", "./sounds/Down/" + soundC4 + "Down.wav", x, y + (nextY * 3), playDown, scale, root, start, 4);
+        clear = Clear;
         //Initialze native hook.
         try {
             GlobalScreen.registerNativeHook();
@@ -84,10 +87,22 @@ public class CheckForUlts extends TimerTask implements NativeKeyListener {
         //champCheck3.UpdateTimerDisplay();
 
         champCheck4.CheckColor();
-       // champCheck4.UpdateTimerDisplay();
+        // champCheck4.UpdateTimerDisplay();
 
         //System.out.println(count++);
         //System.out.println("Mouse X: " + x + " Mouse Y: " + y);
+        /*clear.setOnAction(e -> champCheck1.resetUltTimer());
+        clear.setOnAction(e -> champCheck2.resetUltTimer());
+        clear.setOnAction(e -> champCheck3.resetUltTimer());
+        clear.setOnAction(e -> champCheck4.resetUltTimer());*/
+    }
+
+    public void resetAllUlts() {
+        
+        champCheck1.resetUltTimer();
+        champCheck2.resetUltTimer();
+        champCheck3.resetUltTimer();
+        champCheck4.resetUltTimer();
     }
 
     public void windowClosing(WindowEvent e) { /* Unimplemented */ }
@@ -111,11 +126,10 @@ public class CheckForUlts extends TimerTask implements NativeKeyListener {
 
         } else {
 
-            champCheck1.HideTimerDisplay();
-            champCheck2.HideTimerDisplay();
-            champCheck3.HideTimerDisplay();
-            champCheck4.HideTimerDisplay();
-
+            /*champCheck1.HideTimerDisplay();       
+             champCheck2.HideTimerDisplay();
+             champCheck3.HideTimerDisplay();
+             champCheck4.HideTimerDisplay();*/
         }
     }
 

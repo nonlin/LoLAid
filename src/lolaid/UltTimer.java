@@ -240,6 +240,15 @@ public class UltTimer {
         });
     }
 
+    public void resetUltTimer() {
+        startCount = true;
+        tempCoolDown = 0;
+        ultCoolDownSet = false;
+        countingDown = false;
+        seconds = 0;
+        removeTimer();
+    }
+
     private void UltTimerLogicDown() {
         //if we've been given the ok to start Counting and we haven't already gotten a coolDown Down then we need to prepare to get one
         if (startCount && !ultCoolDownSet && !countingDown) {
@@ -288,10 +297,17 @@ public class UltTimer {
                     countingDown = false;
                     seconds = 0;
                 } //This is where are timer was "right" just prevent setting new cooldown and starting timer over
-                else if (seconds <= 0) {
+                else if (seconds == 0) {
                     startCount = false;
                     ultCoolDownSet = true;
                     countingDown = true;
+                    seconds = 0;
+                } //in case ult timer is off becuase ult has gone longer than expected add the increased time to correct the ult timer
+                else if (seconds < 0) {
+                    startCount = false;
+                    ultCoolDownSet = true;
+                    countingDown = true;
+                    tempCoolDown = tempCoolDown + (seconds * -1);
                     seconds = 0;
                 }
             }
