@@ -114,8 +114,9 @@ public class UltTimer {
     boolean CheckColor() {
 
         this.color = robot.getPixelColor(x, y);
+       // System.out.println("X:" + x + " Y:"+ y + " " + this.color);
         //Do when Ult is Up
-        if (!ultOn && (color.getGreen() > 250 && (color.getRed() < 153 && color.getBlue() < 153) || (color.getGreen() > 203 && (color.getRed() < 103 && color.getBlue() < 103) || (color.getGreen() > 50 && (color.getRed() < 3 && color.getBlue() < 3))))) {
+        if (!ultOn && (color.getGreen() > 140 && (color.getRed() <140 && color.getBlue() > 90) )) {
             AnnounceUltOn();
             UltTimerLogicUp();
             ultOn = true;
@@ -124,14 +125,14 @@ public class UltTimer {
             }
 
         } //in case where enable down is on we play the sound and toggle the ultOn 
-        else if (enablePlayDown && ultOff && (color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50)) {
+        else if (enablePlayDown && ultOff && ((color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50) || (color.getGreen() < 90 && color.getRed() < 50 && color.getBlue() > 50))) {
             AnnounceUltOff();
             UltTimerLogicDown();
             ultOn = false;
             ultOff = false;
 
         } //to still toggle ultOn in case where user doesn't want to enable down sound. 
-        else if (!enablePlayDown && (color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50)) {
+        else if (!enablePlayDown && ((color.getGreen() < 50 && color.getRed() < 50 && color.getBlue() < 50) || (color.getGreen() < 90 && color.getRed() < 50 && color.getBlue() > 50))) {
             UltTimerLogicDown();
             ultOn = false;
 
@@ -188,20 +189,31 @@ public class UltTimer {
 
     public void createTimer() {
         //start();
-        int offSet = 30;
-        int maxFontSize = scale + 1;
-        String couterStyle = "-fx-text-fill: rgba(200, 60, 200, 1.0); -fx-font-style: italic; -fx-font-size: " + maxFontSize + "; -fx-font-weight: bold; -fx-padding: 0 0 20 0;";
+        int offSet = 34;
+        double maxFontSize =  (65 * (scale/100.0));
+
+        if(scale <= 10){
+            maxFontSize =  (400 * (scale/100.0));
+        }
+        if(scale <= 5){
+            maxFontSize =  (800 * (scale/100.0));
+        }
+        if(scale <= 2){
+            maxFontSize =  (1600 * (scale/100.0));
+        }
+        
+         
+        String couterStyle = "-fx-text-fill: rgba(250, 250, 250, 1.0); -fx-font-style: italic; -fx-font-size: " + maxFontSize + "; -fx-font-weight: bold; -fx-padding: 0 0 20 0;";
 
         //Use Platform.runlater to create labels outside of fx thread
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-
-                counter_1.setLayoutX(x + offSet);
+                counter_1.setLayoutX(x - offSet);
                 counter_1.setLayoutY(y);
                 root.getChildren().add(counter_1);
                 counter_1.setStyle(couterStyle);
-
+                System.out.println("X:" + x + " " + "Y:" + y);
                 // counter_1.setText(Integer.toString(seconds));
             }
         });

@@ -65,14 +65,14 @@ public class LoLAid extends Application {
 
     int scale = -1;
     double pixleCount = 0;
-    String versionNum = "1.3.2";
+    String versionNum = "1.3.3";
     boolean playUp = true;
     boolean playDown = false;
     String soundC1, soundC2, soundC3, soundC4;
     int globalX, globalY, globalNextY;
     Stage secondaryStage = new Stage();
     Pane root = new Pane();
-    final Scene scene = new Scene(root, 200, 700);
+    final Scene scene = new Scene(root, Toolkit.getDefaultToolkit().getScreenSize().width, Toolkit.getDefaultToolkit().getScreenSize().height);
     CheckForUlts ultChecker;
 
     @Override
@@ -118,7 +118,7 @@ public class LoLAid extends Application {
         GridPane.setConstraints(description, 0, 2);
         GridPane.setColumnSpan(description, 2);
         grid.getChildren().add(description);
-        description.setText("Enter your Lol Hud Scale Factor in the above text field." + "\n" + "Hit Tab in game to see Timers (Beta)");
+        description.setText("Enter your Lol MiniMap Scale Factor in the above text field." + "\n" + "Hit Tab in game to see timer counters (Beta)");
 
         //Adding a Label
         final Label timeLabel1 = new Label();
@@ -194,25 +194,25 @@ public class LoLAid extends Application {
         double height = Toolkit.getDefaultToolkit().getScreenSize().height;
         double width = Toolkit.getDefaultToolkit().getScreenSize().width;
         //Based on 2560x1440 resolution
-        double baseMaxX = 67.0;
-        double baseMaxY = 260.0;
-        double baseMaxNextY = (110.0);
+        double baseMaxX = 2523.0;
+        double baseMaxY = 947.0;
+        double baseMaxNextY = (72.0);
 
-        double baseMinX = 32.0;
-        double baseMinY = (131.0);
-        double baseMinNextY = (56.0);
+        double baseMinX = 2528.0;
+        double baseMinY = (1006.0);
+        double baseMinNextY = (62.0);
 
         double heightRatio = (height / 1440.0);
         double widthRatio = (width / 2560.0);
         //Scale max and min to match new max and min of current resolution. 
         double maxValueX = baseMaxX * widthRatio;
         double maxValueY = baseMaxY * heightRatio;
-        double maxValueNextY = baseMaxNextY * heightRatio;
+        double maxValueNextY = baseMaxNextY * widthRatio;                
 
         double minValueX = baseMinX * widthRatio;
         double minValueY = baseMinY * heightRatio;
-        double minValueNextY = baseMinNextY * heightRatio;
-
+        double minValueNextY = baseMinNextY * widthRatio;
+                    
         //Scale is from 0 to 100 and ratio is from minV/maxV to 1. 
         //Obtained from minValue/maxValue at scale 0 and scale 100
         double baseRatioX = (minValueX / maxValueX);
