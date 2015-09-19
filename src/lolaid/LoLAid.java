@@ -65,7 +65,7 @@ public class LoLAid extends Application {
 
     int scale = -1;
     double pixleCount = 0;
-    String versionNum = "1.3.3";
+    String versionNum = "1.3.4";
     boolean playUp = true;
     boolean playDown = false;
     String soundC1, soundC2, soundC3, soundC4;
@@ -146,8 +146,12 @@ public class LoLAid extends Application {
                 Stage transStage = new Stage();
                 secondaryStage = transStage;
                 scale = Integer.parseInt(scaleInput.getText());
+                //Because doing math with scale of 0 results in bad answers, 1 is good and still close enough to zero that it shouldn't effect the apps accuracy. 
+                if(scale == 0){
+                    scale = 1;
+                }
                 transWindow(secondaryStage);
-                runCheck(timeLabel1, Integer.parseInt(scaleInput.getText()), label, timer, clear, scaleInput, submit);
+                runCheck(timeLabel1, scale, label, timer, clear, scaleInput, submit);
 
             } else {
                 label.setText("You have not enetred a scale factor.");
@@ -193,14 +197,15 @@ public class LoLAid extends Application {
 
         double height = Toolkit.getDefaultToolkit().getScreenSize().height;
         double width = Toolkit.getDefaultToolkit().getScreenSize().width;
-        //Based on 2560x1440 resolution
-        double baseMaxX = 2523.0;
-        double baseMaxY = 947.0;
-        double baseMaxNextY = (72.0);
-
-        double baseMinX = 2528.0;
-        double baseMinY = (1006.0);
-        double baseMinNextY = (62.0);
+        //Based on a max resolution of 2560x1440
+        //baseMax is really Max Scale Results
+        double baseMaxX = 2516.0;
+        double baseMaxY = 973.0;
+        double baseMaxNextY = (85.0);
+        //baseMin is really Min Scale Results
+        double baseMinX = 2527.0;
+        double baseMinY = (1088.0);
+        double baseMinNextY = (64.0);
 
         double heightRatio = (height / 1440.0);
         double widthRatio = (width / 2560.0);

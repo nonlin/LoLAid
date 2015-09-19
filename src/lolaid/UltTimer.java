@@ -189,12 +189,12 @@ public class UltTimer {
 
     public void createTimer() {
         //start();
-        int offSet = 34;
+        int offSet = 30;    
         double maxFontSize =  (65 * (scale/100.0));
 
         if(scale <= 10){
             maxFontSize =  (400 * (scale/100.0));
-        }
+        }               
         if(scale <= 5){
             maxFontSize =  (800 * (scale/100.0));
         }

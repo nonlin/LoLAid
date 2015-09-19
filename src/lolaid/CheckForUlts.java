@@ -47,10 +47,10 @@ public class CheckForUlts extends TimerTask implements NativeKeyListener {
 
     public CheckForUlts(int x, int y, int nextY, boolean playUp, boolean playDown, String soundC1, String soundC2, String soundC3, String soundC4, int scale, Pane root, Button Clear) {
 
-        champCheck1 = new UltTimer("./sounds/Up/" + soundC1 + "Up.wav", "./sounds/Down/" + soundC1 + "Down.wav", x, y, playDown, scale, root, start, 1);
-        champCheck2 = new UltTimer("./sounds/Up/" + soundC2 + "Up.wav", "./sounds/Down/" + soundC2 + "Down.wav", x - nextY, y, playDown, scale, root, start, 2);
-        champCheck3 = new UltTimer("./sounds/Up/" + soundC3 + "Up.wav", "./sounds/Down/" + soundC3 + "Down.wav", x - (nextY * 2), y, playDown, scale, root, start, 3);
-        champCheck4 = new UltTimer("./sounds/Up/" + soundC4 + "Up.wav", "./sounds/Down/" + soundC4 + "Down.wav", x - (nextY * 3),y , playDown, scale, root, start, 4);
+        champCheck1 = new UltTimer("./sounds/Up/" + soundC1 + "Up.wav", "./sounds/Down/" + soundC1 + "Down.wav", x - (nextY * 3), y, playDown, scale, root, start, 1);
+        champCheck2 = new UltTimer("./sounds/Up/" + soundC2 + "Up.wav", "./sounds/Down/" + soundC2 + "Down.wav", x - (nextY * 2), y, playDown, scale, root, start, 2);
+        champCheck3 = new UltTimer("./sounds/Up/" + soundC3 + "Up.wav", "./sounds/Down/" + soundC3 + "Down.wav", x - nextY, y, playDown, scale, root, start, 3);
+        champCheck4 = new UltTimer("./sounds/Up/" + soundC4 + "Up.wav", "./sounds/Down/" + soundC4 + "Down.wav", x,y , playDown, scale, root, start, 4);
         clear = Clear;
         System.out.println(x);
         System.out.println(x - (nextY));
